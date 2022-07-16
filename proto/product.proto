@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+option go_package = "/pb";
+
+message ProductRequest {
+  string name = 1;
+}
+
+message ProductResponse {
+  string name = 1;
+}
+
+service ProductsService {
+  rpc Create(stream ProductRequest) returns (stream ProductResponse){};
+}
