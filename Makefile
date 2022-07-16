@@ -7,8 +7,9 @@ proto:
 	#windows
 	#protoc proto .\proto\*.proto --go_out=.\pb --go-grpc_out=.\pb
 	protoc protoc --go_out=.\ --go-grpc_out=. proto\*.proto
-	# ou ainda no windows:
-	protoc --proto_path=proto .\proto\*.proto --go-grpc_out=.
+	# ou ainda no windows por definição:
+	protoc --go_out=.\pkg --go-grpc_out=.\pkg proto\*.proto
+
 
 clean:
 	rm -rf pkg/pb/*
