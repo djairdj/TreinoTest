@@ -10,7 +10,10 @@ import (
 
 func main() {
 	servidor := grpc.NewServer()
-	pb.RegisterProductsServiceServer(servidor, &srv.ProductServer{})
+	pb.RegisterProductsServiceServer(
+		servidor,
+		&srv.ProductServer{},
+	)
 	port := ":5001"
 	listener, err := net.Listen("tcp", port)
 	if err != nil {

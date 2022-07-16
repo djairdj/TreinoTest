@@ -15,6 +15,6 @@ clean:
 	rm -rf pkg/pb/*
 
 run:
-	go run cmd/main.go
+	go run cmd/server/main.go
 
 .PHONY: proto
