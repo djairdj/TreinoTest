@@ -18,7 +18,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ProductsServiceClient interface {
-	Create(ctx context.Context, opts ...grpc.CallOption) (ProductsService_CreateClient, error)
+	Create(ctx context.Context, in *ProductRequest, opts ...grpc.CallOption) (*ProductResponse, error)
 }
 
 type productsServiceClient struct {
@@ -29,42 +29,20 @@ func NewProductsServiceClient(cc grpc.ClientConnInterface) ProductsServiceClient
 	return &productsServiceClient{cc}
 }
 
-func (c *productsServiceClient) Create(ctx context.Context, opts ...grpc.CallOption) (ProductsService_CreateClient, error) {
-	stream, err := c.cc.NewStream(ctx, &ProductsService_ServiceDesc.Streams[0], "/ProductsService/Create", opts...)
+func (c *productsServiceClient) Create(ctx context.Context, in *ProductRequest, opts ...grpc.CallOption) (*ProductResponse, error) {
+	out := new(ProductResponse)
+	err := c.cc.Invoke(ctx, "/ProductsService/Create", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &productsServiceCreateClient{stream}
-	return x, nil
-}
-
-type ProductsService_CreateClient interface {
-	Send(*ProductRequest) error
-	Recv() (*ProductResponse, error)
-	grpc.ClientStream
-}
-
-type productsServiceCreateClient struct {
-	grpc.ClientStream
-}
-
-func (x *productsServiceCreateClient) Send(m *ProductRequest) error {
-	return x.ClientStream.SendMsg(m)
-}
-
-func (x *productsServiceCreateClient) Recv() (*ProductResponse, error) {
-	m := new(ProductResponse)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
+	return out, nil
 }
 
 // ProductsServiceServer is the server API for ProductsService service.
 // All implementations must embed UnimplementedProductsServiceServer
 // for forward compatibility
 type ProductsServiceServer interface {
-	Create(ProductsService_CreateServer) error
+	Create(context.Context, *ProductRequest) (*ProductResponse, error)
 	mustEmbedUnimplementedProductsServiceServer()
 }
 
@@ -72,8 +50,8 @@ type ProductsServiceServer interface {
 type UnimplementedProductsServiceServer struct {
 }
 
-func (UnimplementedProductsServiceServer) Create(ProductsService_CreateServer) error {
-	return status.Errorf(codes.Unimplemented, "method Create not implemented")
+func (UnimplementedProductsServiceServer) Create(context.Context, *ProductRequest) (*ProductResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
 }
 func (UnimplementedProductsServiceServer) mustEmbedUnimplementedProductsServiceServer() {}
 
@@ -88,30 +66,22 @@ func RegisterProductsServiceServer(s grpc.ServiceRegistrar, srv ProductsServiceS
 	s.RegisterService(&ProductsService_ServiceDesc, srv)
 }
 
-func _ProductsService_Create_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(ProductsServiceServer).Create(&productsServiceCreateServer{stream})
-}
-
-type ProductsService_CreateServer interface {
-	Send(*ProductResponse) error
-	Recv() (*ProductRequest, error)
-	grpc.ServerStream
-}
-
-type productsServiceCreateServer struct {
-	grpc.ServerStream
-}
-
-func (x *productsServiceCreateServer) Send(m *ProductResponse) error {
-	return x.ServerStream.SendMsg(m)
-}
-
-func (x *productsServiceCreateServer) Recv() (*ProductRequest, error) {
-	m := new(ProductRequest)
-	if err := x.ServerStream.RecvMsg(m); err != nil {
+func _ProductsService_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductRequest)
+	if err := dec(in); err != nil {
 		return nil, err
 	}
-	return m, nil
+	if interceptor == nil {
+		return srv.(ProductsServiceServer).Create(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ProductsService/Create",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductsServiceServer).Create(ctx, req.(*ProductRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 // ProductsService_ServiceDesc is the grpc.ServiceDesc for ProductsService service.
@@ -120,14 +90,12 @@ func (x *productsServiceCreateServer) Recv() (*ProductRequest, error) {
 var ProductsService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "ProductsService",
 	HandlerType: (*ProductsServiceServer)(nil),
-	Methods:     []grpc.MethodDesc{},
-	Streams: []grpc.StreamDesc{
+	Methods: []grpc.MethodDesc{
 		{
-			StreamName:    "Create",
-			Handler:       _ProductsService_Create_Handler,
-			ServerStreams: true,
-			ClientStreams: true,
+			MethodName: "Create",
+			Handler:    _ProductsService_Create_Handler,
 		},
 	},
+	Streams:  []grpc.StreamDesc{},
 	Metadata: "proto/product.proto",
 }

@@ -11,5 +11,5 @@ message ProductResponse {
 }
 
 service ProductsService {
-  rpc Create(stream ProductRequest) returns (stream ProductResponse){};
+  rpc Create(ProductRequest) returns (ProductResponse){};
 }
