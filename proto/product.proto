@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+package produtos;
+
 option go_package = "/pb";
 
 message ProductRequest {
@@ -11,5 +13,5 @@ message ProductResponse {
 }
 
 service ProductsService {
-  rpc Create(ProductRequest) returns (ProductResponse){};
+  rpc CreateProduct(ProductRequest) returns (ProductResponse){};
 }

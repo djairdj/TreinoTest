@@ -4,6 +4,7 @@ import (
 	"TreinoTest/pkg/pb"
 	"TreinoTest/pkg/srv"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 	"log"
 	"net"
 )
@@ -15,6 +16,7 @@ func main() {
 		&srv.ProductServer{},
 	)
 	port := ":5001"
+	reflection.Register(servidor)
 	listener, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Fatal(err)
