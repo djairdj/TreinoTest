@@ -1,8 +1,8 @@
 package main
 
 import (
+	"TreinoTest/internal/service/product"
 	"TreinoTest/pkg/pb"
-	"TreinoTest/pkg/srv"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"log"
@@ -13,7 +13,7 @@ func main() {
 	servidor := grpc.NewServer()
 	pb.RegisterProductsServiceServer(
 		servidor,
-		&srv.ProductServer{},
+		&product.ProductServer{},
 	)
 	port := ":5001"
 	reflection.Register(servidor)
@@ -21,8 +21,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	grpc_Error := servidor.Serve(listener)
-	if grpc_Error != nil {
-		log.Fatal(grpc_Error)
+	grpcError := servidor.Serve(listener)
+	if grpcError != nil {
+		log.Fatal(grpcError)
 	}
 }

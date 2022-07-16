@@ -1,4 +1,4 @@
-package srv
+package product
 
 import (
 	"TreinoTest/pkg/pb"
