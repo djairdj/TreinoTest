@@ -8,7 +8,7 @@ proto:
 	#protoc proto .\proto\*.proto --go_out=.\pb --go-grpc_out=.\pb
 	protoc protoc --go_out=.\ --go-grpc_out=. proto\*.proto
 	# ou ainda no windows por definição:
-	protoc --go_out=.\pkg --go-grpc_out=.\pkg proto\*.proto
+	protoc --go_out=.\pkg --go-grpc_out=require_unimplemented_servers=false:.\pkg proto\*.proto
 
 evans:
 	go install github.com/ktr0731/evans@latest

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"TreinoTest/respository/product"
+	"TreinoTest/internal/respository/product"
 	"context"
 	"fmt"
 	"go.mongodb.org/mongo-driver/mongo"

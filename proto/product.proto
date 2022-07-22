@@ -1,17 +1,17 @@
 syntax = "proto3";
 
-package produtos;
+package products;
 
 option go_package = "/pb";
 
-message ProductRequest {
+message CreateProductRequest {
   string name = 1;
 }
 
-message ProductResponse {
+message CreateProductResponse {
   string name = 1;
 }
 
-service ProductsService {
-  rpc CreateProduct(ProductRequest) returns (ProductResponse){};
+service ProductService {
+  rpc CreateProduct(CreateProductRequest) returns (CreateProductResponse){}
 }

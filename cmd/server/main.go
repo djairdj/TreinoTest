@@ -10,19 +10,19 @@ import (
 )
 
 func main() {
-	servidor := grpc.NewServer()
-	pb.RegisterProductsServiceServer(
-		servidor,
-		&product.ProductServer{},
+	server := grpc.NewServer()
+	pb.RegisterProductServiceServer(
+		server,
+		product.NewProductService(),
 	)
-	port := ":5001"
-	reflection.Register(servidor)
+	port := ":50051"
+	reflection.Register(server)
 	listener, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Fatal(err)
 	}
-	grpcError := servidor.Serve(listener)
-	if grpcError != nil {
-		log.Fatal(grpcError)
+	err = server.Serve(listener)
+	if err != nil {
+		log.Fatal(err)
 	}
 }
