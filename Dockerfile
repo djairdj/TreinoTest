@@ -8,7 +8,7 @@ RUN go mod download
 
 COPY . .
 
-RUN go build -o entrypoint ./cmd/client/main.go
+RUN go build -o entrypoint ./cmd/server/main.go
 
 FROM alpine
 

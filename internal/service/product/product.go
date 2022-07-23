@@ -1,20 +1,47 @@
 package product
 
 import (
+	"TreinoTest/internal/repository/product"
 	"TreinoTest/pkg/pb"
 	"context"
-	"log"
 )
 
 type Product struct {
+	productRepository product.Repository
 }
 
-func NewProductService() pb.ProductServiceServer {
-	return &Product{}
+func NewProductService(repository product.Repository) pb.ProductServiceServer {
+	return &Product{productRepository: repository}
 }
 
-func (*Product) CreateProduct(ctx context.Context, request *pb.CreateProductRequest) (*pb.CreateProductResponse, error) {
-	response := &pb.CreateProductResponse{Name: request.Name}
-	log.Println("Mensagem recebida", request.Name)
+func (p *Product) Create(ctx context.Context, request *pb.CreateRequest) (*pb.CreateResponse, error) {
+	prod, err := p.productRepository.Create(ctx, request.Name)
+	if err != nil {
+		return nil, err
+	}
+	response := &pb.CreateResponse{
+		Id:    prod.ID,
+		Name:  prod.Name,
+		Votes: int32(prod.Votes),
+	}
 	return response, nil
+}
+
+func (p *Product) List(ctx context.Context, request *pb.ListRequest) (*pb.ListResponse, error) {
+	lista, err := p.productRepository.List(ctx)
+	if err != nil {
+		return nil, err
+	}
+	response := pb.ListResponse{
+		Products: []*pb.CreateResponse{},
+	}
+	for _, v := range lista {
+		res := pb.CreateResponse{
+			Id:    v.ID,
+			Name:  v.Name,
+			Votes: int32(v.Votes),
+		}
+		response.Products = append(response.Products, &res)
+	}
+	return &response, err
 }

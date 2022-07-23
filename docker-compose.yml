@@ -28,12 +28,16 @@ services:
     depends_on:
       - mongo
 
-  store-client:
+  store-server:
     build:
       context: .
-    image: store-client
+    image: store-server
+    ports:
+      - 50051:50051
     environment:
-      MONGO_URI: mongodb://admin:admin@mongo:27017
+      MONGO_URI: mongodb+srv://user:ttbk1@testes.zvetvwn.mongodb.net/?retryWrites=true&w=majority
+#      MONGO_URI: mongodb://admin:admin@mongo:27017
+#      MONGO_URI = "mongodb://admin:admin@127.0.0.1:27017"
 
 volumes:
   mongodb:
