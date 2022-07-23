@@ -17,6 +17,7 @@ import (
 
 func main() {
 	uri := os.Getenv("MONGO_URI")
+	port := os.Getenv("PORT")
 	serverAPIOptions := options.ServerAPI(options.ServerAPIVersion1)
 	clientOptions := options.Client().ApplyURI(uri).SetServerAPIOptions(serverAPIOptions)
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -33,9 +34,9 @@ func main() {
 		server,
 		serviceproduct.NewProductService(repository),
 	)
-	port := ":50051"
+	address := ":" + port
 	reflection.Register(server)
-	listener, err := net.Listen("tcp", port)
+	listener, err := net.Listen("tcp", address)
 	if err != nil {
 		log.Fatal(err)
 	}
