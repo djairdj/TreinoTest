@@ -64,12 +64,36 @@ func (r mongoRepository) List(ctx context.Context) ([]entity.Product, error) {
 		}
 		results = append(results, elem)
 	}
+
 	if err := cur.Err(); err != nil {
 		return nil, err
 	}
+
 	err = cur.Close(ctx)
 	if err != nil {
 		return nil, err
 	}
+
 	return results, nil
+}
+
+func (r mongoRepository) GetOne(ctx context.Context, id string) (*entity.Product, error) {
+	objectId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, err
+	}
+
+	collection := r.db.Collection("product")
+	result := collection.FindOne(ctx, bson.M{"_id": objectId})
+	if result.Err() != nil {
+		return nil, result.Err()
+	}
+
+	prod := entity.Product{}
+	err = result.Decode(&prod)
+	if err != nil {
+		return nil, err
+	}
+
+	return &prod, nil
 }

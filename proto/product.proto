@@ -4,6 +4,12 @@ package products;
 
 option go_package = "/pb";
 
+message Product {
+  string id = 1;
+  string name = 2;
+  int32 votes = 3;
+}
+
 message CreateRequest {
   string name = 1;
 }
@@ -17,10 +23,19 @@ message CreateResponse {
 message ListRequest{}
 
 message ListResponse {
-  repeated CreateResponse products = 1;
+  repeated Product products = 1;
+}
+
+message GetOneRequest {
+  string ID = 1;
+}
+
+message GetOneResponse {
+  Product product = 1;
 }
 
 service ProductService {
   rpc Create(CreateRequest) returns (CreateResponse){}
   rpc List(ListRequest) returns(ListResponse){}
+  rpc GetOne(GetOneRequest) returns (GetOneResponse){}
 }

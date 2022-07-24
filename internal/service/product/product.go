@@ -33,10 +33,10 @@ func (p *Product) List(ctx context.Context, request *pb.ListRequest) (*pb.ListRe
 		return nil, err
 	}
 	response := pb.ListResponse{
-		Products: []*pb.CreateResponse{},
+		Products: []*pb.Product{},
 	}
 	for _, v := range lista {
-		res := pb.CreateResponse{
+		res := pb.Product{
 			Id:    v.ID,
 			Name:  v.Name,
 			Votes: int32(v.Votes),
@@ -44,4 +44,21 @@ func (p *Product) List(ctx context.Context, request *pb.ListRequest) (*pb.ListRe
 		response.Products = append(response.Products, &res)
 	}
 	return &response, err
+}
+
+func (p *Product) GetOne(ctx context.Context, request *pb.GetOneRequest) (*pb.GetOneResponse, error) {
+	productGot, err := p.productRepository.GetOne(ctx, request.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	pbProduct := pb.Product{
+		Id:    productGot.ID,
+		Name:  productGot.Name,
+		Votes: int32(productGot.Votes),
+	}
+	res := pb.GetOneResponse{
+		Product: &pbProduct,
+	}
+	return &res, nil
 }
