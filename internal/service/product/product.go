@@ -1,16 +1,16 @@
 package product
 
 import (
-	"TreinoTest/internal/repository/product"
-	"TreinoTest/pkg/pb"
 	"context"
+	"github.com/djairdj/treinotest/internal/repository/product"
+	"github.com/djairdj/treinotest/pkg/pb"
 )
 
 type Product struct {
-	productRepository product.Repository
+	productRepository product.RepositoryProduct
 }
 
-func NewProductService(repository product.Repository) pb.ProductServiceServer {
+func NewProductService(repository product.RepositoryProduct) pb.ProductServiceServer {
 	return &Product{productRepository: repository}
 }
 
@@ -60,5 +60,51 @@ func (p *Product) GetOne(ctx context.Context, request *pb.GetOneRequest) (*pb.Ge
 	res := pb.GetOneResponse{
 		Product: &pbProduct,
 	}
+	return &res, nil
+}
+
+func (p *Product) Upvote(ctx context.Context, request *pb.UpvoteRequest) (*pb.UpvoteResponse, error) {
+	prod, err := p.productRepository.GetOne(ctx, request.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	prod.Votes += 1
+
+	err = p.productRepository.Update(ctx, prod)
+	if err != nil {
+		return nil, err
+	}
+
+	response := &pb.Product{
+		Id:    prod.ID,
+		Name:  prod.Name,
+		Votes: prod.Votes,
+	}
+
+	res := pb.UpvoteResponse{Product: response}
+	return &res, nil
+}
+
+func (p *Product) Downvote(ctx context.Context, request *pb.DownvoteRequest) (*pb.DownvoteResponse, error) {
+	prod, err := p.productRepository.GetOne(ctx, request.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	prod.Votes -= 1
+
+	err = p.productRepository.Update(ctx, prod)
+	if err != nil {
+		return nil, err
+	}
+
+	response := &pb.Product{
+		Id:    prod.ID,
+		Name:  prod.Name,
+		Votes: prod.Votes,
+	}
+
+	res := pb.DownvoteResponse{Product: response}
 	return &res, nil
 }

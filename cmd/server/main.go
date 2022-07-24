@@ -1,10 +1,10 @@
 package main
 
 import (
-	repositoryproduct "TreinoTest/internal/repository/product"
-	serviceproduct "TreinoTest/internal/service/product"
-	"TreinoTest/pkg/pb"
 	"context"
+	repositoryproduct "github.com/djairdj/treinotest/internal/repository/product"
+	serviceproduct "github.com/djairdj/treinotest/internal/service/product"
+	"github.com/djairdj/treinotest/pkg/pb"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"google.golang.org/grpc"

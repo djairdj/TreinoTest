@@ -21,6 +21,8 @@ type ProductServiceClient interface {
 	Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error)
 	List(ctx context.Context, in *ListRequest, opts ...grpc.CallOption) (*ListResponse, error)
 	GetOne(ctx context.Context, in *GetOneRequest, opts ...grpc.CallOption) (*GetOneResponse, error)
+	Upvote(ctx context.Context, in *UpvoteRequest, opts ...grpc.CallOption) (*UpvoteResponse, error)
+	Downvote(ctx context.Context, in *DownvoteRequest, opts ...grpc.CallOption) (*DownvoteResponse, error)
 }
 
 type productServiceClient struct {
@@ -58,6 +60,24 @@ func (c *productServiceClient) GetOne(ctx context.Context, in *GetOneRequest, op
 	return out, nil
 }
 
+func (c *productServiceClient) Upvote(ctx context.Context, in *UpvoteRequest, opts ...grpc.CallOption) (*UpvoteResponse, error) {
+	out := new(UpvoteResponse)
+	err := c.cc.Invoke(ctx, "/products.ProductService/Upvote", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *productServiceClient) Downvote(ctx context.Context, in *DownvoteRequest, opts ...grpc.CallOption) (*DownvoteResponse, error) {
+	out := new(DownvoteResponse)
+	err := c.cc.Invoke(ctx, "/products.ProductService/Downvote", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ProductServiceServer is the server API for ProductService service.
 // All implementations should embed UnimplementedProductServiceServer
 // for forward compatibility
@@ -65,6 +85,8 @@ type ProductServiceServer interface {
 	Create(context.Context, *CreateRequest) (*CreateResponse, error)
 	List(context.Context, *ListRequest) (*ListResponse, error)
 	GetOne(context.Context, *GetOneRequest) (*GetOneResponse, error)
+	Upvote(context.Context, *UpvoteRequest) (*UpvoteResponse, error)
+	Downvote(context.Context, *DownvoteRequest) (*DownvoteResponse, error)
 }
 
 // UnimplementedProductServiceServer should be embedded to have forward compatible implementations.
@@ -79,6 +101,12 @@ func (UnimplementedProductServiceServer) List(context.Context, *ListRequest) (*L
 }
 func (UnimplementedProductServiceServer) GetOne(context.Context, *GetOneRequest) (*GetOneResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetOne not implemented")
+}
+func (UnimplementedProductServiceServer) Upvote(context.Context, *UpvoteRequest) (*UpvoteResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Upvote not implemented")
+}
+func (UnimplementedProductServiceServer) Downvote(context.Context, *DownvoteRequest) (*DownvoteResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Downvote not implemented")
 }
 
 // UnsafeProductServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -146,6 +174,42 @@ func _ProductService_GetOne_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ProductService_Upvote_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpvoteRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductServiceServer).Upvote(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/products.ProductService/Upvote",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductServiceServer).Upvote(ctx, req.(*UpvoteRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProductService_Downvote_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DownvoteRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductServiceServer).Downvote(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/products.ProductService/Downvote",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductServiceServer).Downvote(ctx, req.(*DownvoteRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ProductService_ServiceDesc is the grpc.ServiceDesc for ProductService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -164,6 +228,14 @@ var ProductService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetOne",
 			Handler:    _ProductService_GetOne_Handler,
+		},
+		{
+			MethodName: "Upvote",
+			Handler:    _ProductService_Upvote_Handler,
+		},
+		{
+			MethodName: "Downvote",
+			Handler:    _ProductService_Downvote_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

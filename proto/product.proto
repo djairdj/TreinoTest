@@ -34,8 +34,26 @@ message GetOneResponse {
   Product product = 1;
 }
 
+message UpvoteRequest {
+  string id = 1;
+}
+
+message UpvoteResponse {
+  Product product = 1;
+}
+
+message DownvoteRequest {
+  string id =1;
+}
+
+message DownvoteResponse {
+  Product product = 1;
+}
+
 service ProductService {
   rpc Create(CreateRequest) returns (CreateResponse){}
   rpc List(ListRequest) returns(ListResponse){}
   rpc GetOne(GetOneRequest) returns (GetOneResponse){}
+  rpc Upvote(UpvoteRequest) returns (UpvoteResponse){}
+  rpc Downvote(DownvoteRequest) returns (DownvoteResponse){}
 }

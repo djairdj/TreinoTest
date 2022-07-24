@@ -1,11 +1,11 @@
 package product
 
-//Implementação do Repository
+//Implementação do RepositoryProduct
 
 import (
-	"TreinoTest/internal/entity"
 	"context"
 	"fmt"
+	"github.com/djairdj/treinotest/internal/entity"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -16,7 +16,7 @@ type mongoRepository struct {
 	db *mongo.Database
 }
 
-func NewMongoRepository(db *mongo.Database) Repository {
+func NewMongoRepository(db *mongo.Database) RepositoryProduct {
 	return &mongoRepository{
 		db: db,
 	}
@@ -96,4 +96,29 @@ func (r mongoRepository) GetOne(ctx context.Context, id string) (*entity.Product
 	}
 
 	return &prod, nil
+}
+
+func (r mongoRepository) Update(ctx context.Context, product *entity.Product) error {
+	objectId, err := primitive.ObjectIDFromHex(product.ID)
+	if err != nil {
+		return err
+	}
+
+	collection := r.db.Collection("product")
+	filter := bson.M{"_id": objectId}
+
+	update := bson.M{
+		"$set": bson.M{
+			"name":  product.Name,
+			"votes": product.Votes,
+		},
+	}
+
+	opt1 := options.FindOneAndUpdate().SetUpsert(true)
+	single := collection.FindOneAndUpdate(ctx, filter, update, opt1)
+	if single.Err() != nil {
+		return single.Err()
+	}
+
+	return nil
 }

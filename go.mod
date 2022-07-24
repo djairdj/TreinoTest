@@ -1,4 +1,4 @@
-module TreinoTest
+module github.com/djairdj/treinotest
 
 go 1.18
 
