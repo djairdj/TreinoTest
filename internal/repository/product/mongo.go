@@ -45,7 +45,7 @@ func (r mongoRepository) List(ctx context.Context) ([]entity.Product, error) {
 	collection := r.db.Collection("product")
 	findOptions := options.Find()
 	//Set the limit of the number of record to find
-	findOptions.SetLimit(5)
+	findOptions.SetLimit(8)
 	//Define an array in which you can store the decoded documents
 	results := []entity.Product{}
 
